@@ -1,10 +1,16 @@
-// Firebase Module — یہ فائل Firebase کو initialize کرتی ہے
-// app، auth، اور db کو export کرتی ہے تاکہ:
-// - auth.js ان سے authentication functions بنا سکے
-// - firestore.js ان سے CRUD functions بنا سکے
-// - app.js انہیں initialized state میں استعمال کر سکے
+// Firebase Configuration Module
+// یہ فائل Firebase کو Modular SDK v9+ کے ساتھ initialize کرتی ہے
+// تینوں instances (app, auth, db) کو export کرتی ہے تاکہ:
+// - auth.js authentication functions بنا سکے
+// - firestore.js CRUD functions بنا سکے
+// - app.js سب کو ایک جگہ استعمال کر سکے
 
-// Firebase کنفیگریشن — Firebase Console سے apiKey وغیرہ یہاں ڈالیں
+import { initializeApp } from 'firebase/app';
+import { getAuth } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore';
+
+// Firebase Console سے حاصل کردہ کنفیگریشن آبجیکٹ
+// اس میں پروجیکٹ کی API key اور دیگر معلومات ہوتی ہیں
 const firebaseConfig = {
     apiKey: '',
     authDomain: '',
@@ -14,30 +20,16 @@ const firebaseConfig = {
     appId: '',
 };
 
-// variables کو پہلے declare کیا تاکہ if/else کے باہر export ہو سکیں
-let app = null;
-let auth = null;
-let db = null;
+// Firebase App initialize — یہ پہلا قدم ہے
+// باقی تمام Firebase services (auth, firestore) اسی پر depend کرتی ہیں
+const app = initializeApp(firebaseConfig);
 
-// Firebase SDK CDN سے لوڈ ہوتا ہے — یہ چیک کہ SDK دستیاب ہے
-if (typeof firebase !== 'undefined') {
+// Authentication instance — auth.js اسے import کرے گا
+// signup(), login(), logout(), onAuthChange() جیسے functions کے لیے
+const auth = getAuth(app);
 
-    // Firebase App initialize — یہ پہلا قدم ہے، باقی سب اسی پر depend کرتے ہیں
-    app = firebase.initializeApp(firebaseConfig);
-
-    // Authentication instance — auth.js یہ import کرے گا
-    // login(), signup(), logout(), onAuthChange() کے لیے
-    auth = firebase.auth();
-
-    // Firestore instance — firestore.js یہ import کرے گا
-    // addDocument(), getDocument(), updateDocument(), deleteDocument() کے لیے
-    db = firebase.firestore();
-
-} else {
-    // SDK نہ ملنے پر اطلاع — app.js میں بھی یہ صورتحال handle کر سکتے ہیں
-    console.warn(
-        'Firebase SDK not found. Ensure CDN scripts are loaded before the module script.'
-    );
-}
+// Firestore instance — firestore.js اسے import کرے گا
+// addDocument(), getDocument(), updateDocument(), deleteDocument() کے لیے
+const db = getFirestore(app);
 
 export { app, auth, db };
