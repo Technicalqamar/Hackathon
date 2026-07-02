@@ -6,10 +6,235 @@
     <title>Dashboard - Hackathon Starter</title>
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/dashboard.css">
-    <!-- Firebase SDK CDN scripts یہاں include کریں (type="module" سے پہلے) -->
 </head>
 <body>
-    <h1>Dashboard</h1>
+    <div class="dashboard-layout">
+        <!-- ===== SIDEBAR ===== -->
+        <aside class="dashboard-sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <div class="sidebar-brand-icon">H</div>
+                <div class="sidebar-brand-text">Hackathon<span>Starter</span></div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <div class="sidebar-label">Main</div>
+                <a href="#" class="sidebar-link active" id="navDashboard">
+                    <span class="sidebar-link-icon">&#9632;</span> Dashboard
+                </a>
+                <a href="#" class="sidebar-link" id="navStudents">
+                    <span class="sidebar-link-icon">&#9632;</span> Students
+                </a>
+
+                <div class="sidebar-label">Management</div>
+                <a href="#" class="sidebar-link" id="navProjects">
+                    <span class="sidebar-link-icon">&#9632;</span> Projects
+                </a>
+                <a href="#" class="sidebar-link" id="navTasks">
+                    <span class="sidebar-link-icon">&#9632;</span> Tasks
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="sidebar-user" id="userProfile">
+                    <div class="sidebar-user-avatar" id="userAvatar">U</div>
+                    <div class="sidebar-user-info">
+                        <h4 id="userName">User</h4>
+                        <p id="userEmail">user@example.com</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- ===== MAIN ===== -->
+        <main class="dashboard-main">
+            <!-- Top Navbar -->
+            <header class="dashboard-navbar">
+                <div class="navbar-left">
+                    <button class="navbar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">&#9776;</button>
+                    <div class="navbar-search">
+                        <span class="navbar-search-icon">&#128269;</span>
+                        <input type="text" id="searchInput" placeholder="Search students...">
+                    </div>
+                </div>
+                <div class="navbar-right">
+                    <button class="navbar-btn" id="notificationsBtn" aria-label="Notifications">
+                        &#128276;
+                        <span class="badge"></span>
+                    </button>
+                    <button class="navbar-btn" id="settingsBtn" aria-label="Settings">&#9881;</button>
+                    <button class="btn btn-sm btn-secondary" id="logoutBtn">Sign Out</button>
+                </div>
+            </header>
+
+            <!-- Content -->
+            <div class="dashboard-content">
+                <!-- Stats -->
+                <section class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-card-header">
+                            <span class="stat-card-label">Total Students</span>
+                            <div class="stat-card-icon blue">&#9632;</div>
+                        </div>
+                        <div class="stat-card-value" id="totalStudents">0</div>
+                        <div class="stat-card-change up">&#9650; 0%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-header">
+                            <span class="stat-card-label">Active Now</span>
+                            <div class="stat-card-icon green">&#9632;</div>
+                        </div>
+                        <div class="stat-card-value" id="activeStudents">0</div>
+                        <div class="stat-card-change up">&#9650; 0%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-header">
+                            <span class="stat-card-label">Courses</span>
+                            <div class="stat-card-icon yellow">&#9632;</div>
+                        </div>
+                        <div class="stat-card-value" id="totalCourses">0</div>
+                        <div class="stat-card-change up">&#9650; 0%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-header">
+                            <span class="stat-card-label">Pending</span>
+                            <div class="stat-card-icon red">&#9632;</div>
+                        </div>
+                        <div class="stat-card-value" id="pendingTasks">0</div>
+                        <div class="stat-card-change down">&#9660; 0%</div>
+                    </div>
+                </section>
+
+                <!-- Student Table Section -->
+                <section>
+                    <div class="section-header">
+                        <h2 class="section-title">Students</h2>
+                        <div class="section-actions">
+                            <button class="btn btn-primary" id="addStudentBtn">+ Add Student</button>
+                        </div>
+                    </div>
+
+                    <!-- Loading State -->
+                    <div id="loadingState" class="table-card">
+                        <div class="loading-state">
+                            <div class="loading-placeholder">
+                                <span class="loader loader-lg"></span>
+                                <p>Loading students...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Empty State -->
+                    <div id="emptyState" class="table-card hidden">
+                        <div class="empty-state">
+                            <div class="empty-state-icon">&#9632;</div>
+                            <h3>No students yet</h3>
+                            <p>Add your first student to get started.</p>
+                            <button class="btn btn-primary mt-2" id="emptyAddBtn">+ Add Student</button>
+                        </div>
+                    </div>
+
+                    <!-- Data Table -->
+                    <div id="tableContainer" class="table-card hidden">
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Student</th>
+                                        <th>Email</th>
+                                        <th>Course</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="studentTable">
+                                    <!-- Rows rendered by JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- ===== ADD STUDENT MODAL ===== -->
+    <div class="modal-overlay" id="addStudentModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Add Student</h3>
+                <button class="modal-close" id="closeAddModal">&times;</button>
+            </div>
+            <form id="addStudentForm">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="addNameInput" class="form-label">Full Name</label>
+                        <input type="text" id="addNameInput" class="form-input" placeholder="Enter student name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="addEmailInput" class="form-label">Email</label>
+                        <input type="email" id="addEmailInput" class="form-input" placeholder="Enter student email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="addCourseInput" class="form-label">Course</label>
+                        <input type="text" id="addCourseInput" class="form-input" placeholder="Enter course name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="addStatusInput" class="form-label">Status</label>
+                        <select id="addStatusInput" class="form-input">
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="cancelAddBtn">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="saveAddBtn">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ===== EDIT STUDENT MODAL ===== -->
+    <div class="modal-overlay" id="editStudentModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Edit Student</h3>
+                <button class="modal-close" id="closeEditModal">&times;</button>
+            </div>
+            <form id="editStudentForm">
+                <div class="modal-body">
+                    <input type="hidden" id="editStudentId">
+                    <div class="form-group">
+                        <label for="editNameInput" class="form-label">Full Name</label>
+                        <input type="text" id="editNameInput" class="form-input" placeholder="Enter student name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editEmailInput" class="form-label">Email</label>
+                        <input type="email" id="editEmailInput" class="form-input" placeholder="Enter student email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editCourseInput" class="form-label">Course</label>
+                        <input type="text" id="editCourseInput" class="form-input" placeholder="Enter course name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editStatusInput" class="form-label">Status</label>
+                        <select id="editStatusInput" class="form-input">
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="cancelEditBtn">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="saveEditBtn">Update</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ===== NOTIFICATION CONTAINER ===== -->
+    <div class="notification-container" id="notificationContainer"></div>
+
     <script type="module" src="../js/app.js"></script>
 </body>
 </html>

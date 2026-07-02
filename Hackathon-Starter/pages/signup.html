@@ -5,10 +5,73 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up - Hackathon Starter</title>
     <link rel="stylesheet" href="../css/style.css">
-    <!-- Firebase SDK CDN scripts یہاں include کریں (type="module" سے پہلے) -->
 </head>
-<body>
-    <h1>Sign Up</h1>
+<body class="auth-page">
+    <div class="auth-card">
+        <div class="auth-logo">
+            <h1>Hackathon Starter</h1>
+            <p>Create your account</p>
+        </div>
+
+        <form id="signupForm" novalidate>
+            <div id="signupError" class="form-error visible" style="display: none;"></div>
+
+            <div class="form-group">
+                <label for="nameInput" class="form-label">Full Name</label>
+                <input type="text" id="nameInput" class="form-input" placeholder="Enter your full name" autocomplete="name" required>
+                <span class="form-error" id="nameError"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="emailInput" class="form-label">Email</label>
+                <input type="email" id="emailInput" class="form-input" placeholder="Enter your email" autocomplete="email" required>
+                <span class="form-error" id="emailError"></span>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="passwordInput" class="form-label">Password</label>
+                    <div class="form-input-wrapper">
+                        <input type="password" id="passwordInput" class="form-input" placeholder="Min 6 characters" autocomplete="new-password" required>
+                        <button type="button" id="togglePasswordBtn" class="form-toggle-password" aria-label="Toggle password visibility">&#128065;</button>
+                    </div>
+                    <span class="form-error" id="passwordError"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPasswordInput" class="form-label">Confirm Password</label>
+                    <input type="password" id="confirmPasswordInput" class="form-input" placeholder="Repeat password" autocomplete="new-password" required>
+                    <span class="form-error" id="confirmPasswordError"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Profile Image (optional)</label>
+                <label for="imageInput" class="auth-avatar-upload">
+                    <div class="auth-avatar-icon">&#128247;</div>
+                    <div class="auth-avatar-text">
+                        <h4>Upload Avatar</h4>
+                        <p>PNG, JPG up to 5MB</p>
+                    </div>
+                </label>
+                <input type="file" id="imageInput" accept="image/png,image/jpeg" style="display:none">
+                <span class="form-error" id="imageError"></span>
+            </div>
+
+            <button type="submit" id="signupBtn" class="btn btn-primary btn-full btn-lg">
+                Create Account
+            </button>
+
+            <div id="signupLoader" class="hidden text-center mt-2">
+                <span class="loader"></span>
+            </div>
+        </form>
+
+        <div class="auth-footer">
+            Already have an account? <a href="login.html">Sign in</a>
+        </div>
+    </div>
+
     <script type="module" src="../js/app.js"></script>
 </body>
 </html>
